@@ -18,10 +18,11 @@
 - [x] **Bài 2 — Core Action, Active User & Retention Metric** → [`02-Retention-Metric.md`](02-Retention-Metric.md) ✅ *(core action = chốt itinerary; metric per-trip + within-window + nurture)*
 - [x] **Bài 3 — Onboarding Audit + Redesign + Before/After** → [`03-Onboarding-First-Core-Action.md`](03-Onboarding-First-Core-Action.md) ✅ *(audit Day18, friction audit, redesign flow, TTV ~90–120s)*
 - [x] **Chỉnh sửa prototype** → trang **`08` trong [`index.html`](index.html)** ✅ *(flow redesign tương tác “After”: Welcome → Destination cards → Chips → Skeleton → Itinerary 5 điểm → **nút Chốt = core action** → Celebration; có Undo/Tạo lại/Đổi điểm đến + **event log trực tiếp** cho Bài 6. Giữ nguyên p00–p07 làm “Before”.)*
-- [x] **Bài 4 — Measurement Ladder & North Star Metric** → [`04-Measurement-Ladder+North-Star-Metric.md`](04-Measurement-Ladder+North-Star-Metric.md)✅ *(NSM = số chuyến đi chốt/năm; ladder kết nối M1,M2,M3)*
+- [x] **Bài 4 — Measurement Ladder & North Star Metric** → [`04-Measurement-Ladder+North-Star-Metric.md`](04-Measurement-Ladder+North-Star-Metric.md) ✅ *(NSM = số chuyến đi chốt/năm; ladder kết nối M1,M2,M3)*
 - [x] **Bài 5 — Nature vs Nurture & Hook Model** → [`05-Nature-Nurture-Hook.md`](05-Nature-Nurture-Hook.md) ✅ *(Hook chỉ áp dụng cho hành vi phụ như theo dõi giá, lưu điểm đến)*
 - [x] **Bài 6 — Metric Tracking Requirement** → [`06-Metric-Tracking-Requirement.md`](06-Metric-Tracking-Requirement.md) ✅ *(Bảng event chi tiết với thuộc tính và mục đích, map 1-1 với Measurement Ladder)*
-- [ ] Demo path Day 20 ≤ 8 phút + bật GitHub Pages lấy link nộp *(Anh)*
+- [x] **Demo path Day 20 ≤ 8 phút** → [`demo.html`](demo.html) ✅ *(slide HTML 9 trang, nút ‹ › + phím ← →, theo timeline đề mục 21; có link mở prototype trang 08)*
+- [ ] Bật GitHub Pages → lấy 1 link nộp *(Anh — Settings → Pages → branch `main`)*
 
 ## Quyết định nền tảng (cả nhóm bám theo)
 **AI Travel Planner là sản phẩm tần suất THẤP** (core use case ~2–4 lần/năm). KHÔNG ép daily retention / habit hằng ngày. Đo theo planning window + lần lập chuyến tiếp theo, dùng Nurture để giữ hiện diện giữa hai chuyến. Chi tiết & nguồn: xem file Bài 1.

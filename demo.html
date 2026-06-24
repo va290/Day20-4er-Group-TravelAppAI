@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Demo · Day 20 — AI Travel Planner · Retention, Engagement & Habit Loop</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1f232c; --line:#2a2f3a;
+    --text:#e6e9ef; --muted:#9aa3b2; --brand:#e2603a; --brand-soft:#2a1c16;
+    --act:#34c759; --ask:#f5a623; --dont:#ff5a5f; --info:#4f8cff;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 70% -10%, #1b1f27 0%, var(--bg) 60%);
+    color:var(--text); line-height:1.55; height:100vh; overflow:hidden;
+  }
+  /* progress + topbar */
+  #bar{position:fixed; top:0; left:0; height:3px; background:var(--brand); width:0; z-index:30; transition:width .3s;}
+  .deck{height:100vh; display:flex; align-items:center; justify-content:center; padding:48px 64px 92px;}
+  .slide{display:none; width:100%; max-width:1040px; animation:fade .35s ease;}
+  .slide.active{display:block;}
+  @keyframes fade{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
+
+  .bracket{display:inline-block; font-size:12.5px; font-weight:700; letter-spacing:.4px; color:var(--brand);
+    background:var(--brand-soft); border:1px solid #4a2f23; padding:4px 12px; border-radius:999px; margin-bottom:14px;}
+  h1{font-size:40px; line-height:1.15; margin:0 0 10px;}
+  h2{font-size:30px; margin:0 0 16px;}
+  h3{font-size:17px; margin:18px 0 8px; color:var(--brand);}
+  p.lead{color:var(--muted); font-size:17px; max-width:820px; margin:0 0 8px;}
+  .muted{color:var(--muted);}
+  .big{font-size:21px;}
+  ul{margin:8px 0; padding-left:22px;} li{margin:7px 0; font-size:16px;}
+  .quote{border-left:3px solid var(--brand); background:var(--panel); padding:12px 18px; border-radius:8px;
+    font-size:18px; font-style:italic; margin:10px 0; max-width:820px;}
+  .grid{display:grid; gap:14px;}
+  .cols-2{grid-template-columns:1fr 1fr;} .cols-3{grid-template-columns:repeat(3,1fr);}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px 18px;}
+  .card h4{margin:0 0 8px; font-size:15px; color:var(--brand);}
+  .card p, .card li{font-size:14.5px; color:var(--text);}
+  .card.soft{background:var(--panel2);}
+  .pill{display:inline-block; font-size:12px; font-weight:600; padding:3px 9px; border-radius:999px; border:1px solid var(--line); background:var(--panel2); color:var(--muted); margin:2px 4px 2px 0;}
+  .pos{color:var(--act);} .neg{color:var(--dont);} .warnc{color:var(--ask);}
+  .tag{display:inline-block; font-size:12px; font-weight:600; padding:2px 9px; border-radius:999px; background:var(--panel2); border:1px solid var(--line); color:var(--muted);}
+  table{border-collapse:collapse; width:100%; font-size:14px; margin-top:6px;}
+  th,td{border:1px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top;}
+  th{background:var(--panel2); color:var(--text);}
+  .flow{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:10px 0; font-size:14px;}
+  .node{background:var(--panel2); border:1px solid var(--line); border-radius:9px; padding:8px 12px;}
+  .node.hot{border-color:var(--brand); color:#fff; background:var(--brand-soft);}
+  .arrow{color:var(--muted);}
+  .kpi{font-size:15px;}
+  .kpi b{color:var(--brand);}
+  .team{display:flex; gap:10px; flex-wrap:wrap; margin-top:18px;}
+  .team .m{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:8px 14px; font-size:14px;}
+  .team .m span{color:var(--muted); font-size:12px; display:block;}
+  .note{font-size:13px; color:var(--muted); margin-top:10px;}
+  .btnlink{display:inline-block; margin-top:14px; background:var(--brand); color:#fff; text-decoration:none;
+    padding:9px 16px; border-radius:9px; font-size:14px; font-weight:600; border:1px solid var(--brand);}
+  .btnlink.ghost{background:transparent; color:var(--brand);}
+
+  /* nav */
+  #nav{position:fixed; bottom:0; left:0; right:0; height:64px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 28px; background:linear-gradient(transparent, rgba(15,17,21,.9) 40%); z-index:20;}
+  .nbtn{background:var(--panel); border:1px solid var(--line); color:var(--text); width:44px; height:44px; border-radius:50%;
+    font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;}
+  .nbtn:hover{border-color:var(--brand); color:var(--brand);}
+  .nbtn:disabled{opacity:.35; cursor:default;}
+  #counter{font-size:13px; color:var(--muted); font-variant-numeric:tabular-nums;}
+  #title-mini{font-size:13px; color:var(--muted); max-width:60%; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  @media (max-width:720px){ .deck{padding:28px 20px 84px;} .cols-2,.cols-3{grid-template-columns:1fr;} h1{font-size:30px;} h2{font-size:23px;} }
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div class="deck" id="deck">
+
+  <!-- ===== S1 · Title ===== -->
+  <section class="slide active" data-title="Mở đầu">
+    <span class="bracket">Day 20 · Demo ≤ 8 phút</span>
+    <h1>AI Travel Planner<br><span style="color:var(--brand)">Retention, Engagement &amp; Habit Loop</span></h1>
+    <p class="lead">Từ use case &amp; hành vi tự nhiên → core action → retention metric → onboarding tối ưu → North Star → habit loop → tracking. Tiếp nối prototype Ngày 18.</p>
+    <div class="team">
+      <div class="m">Nguyễn Viết Du <span>2A202600800 · Bài 2</span></div>
+      <div class="m">Đỗ Việt Anh <span>2A202601008 · Bài 1 · tích hợp</span></div>
+      <div class="m">Nguyễn Kim Hoàng <span>2A202600987 · Bài 3 · prototype</span></div>
+      <div class="m">Nguyễn Lê Văn <span>2A202600569 · Bài 4·5·6</span></div>
+    </div>
+    <p class="note">Điều hướng: phím ← → hoặc nút dưới góc · trang <b>08</b> trong prototype là flow tương tác chạy thử.</p>
+  </section>
+
+  <!-- ===== S2 · 0:00–1:00 Problem/Persona/Why/Alternative ===== -->
+  <section class="slide" data-title="Use case &amp; người dùng">
+    <span class="bracket">0:00 – 1:00 · Use case</span>
+    <h2>Vấn đề thật, bằng lời người dùng</h2>
+    <div class="quote">“Mỗi lần sắp đi du lịch, tôi tốn cả buổi tối mở cả chục tab so giá vé &amp; khách sạn, ghép lịch từng ngày — mà vẫn sợ bỏ lỡ chỗ hay hoặc đặt hớ giá.”</div>
+    <div class="grid cols-2" style="margin-top:14px">
+      <div class="card"><h4>Persona</h4><p>NV văn phòng / cặp đôi ~25–40, tự tổ chức <b>vài chuyến/năm</b>, ít thời gian, ngân sách hữu hạn.</p>
+        <p class="muted" style="margin-top:6px"><b>Anti-persona:</b> khách công tác có công ty lo · backpacker thích tự research · người mua tour trọn gói.</p></div>
+      <div class="card"><h4>The Why (outcome)</h4><p>Đi được một chuyến <b>đáng tiền</b> mà không phải gồng research và không lo quyết định sai.</p>
+        <h4 style="margin-top:12px">Alternative hiện tại</h4><p>Mở nhiều tab (OTA/metasearch/hãng bay), hỏi group, xem blog/video, spreadsheet, hoặc mua tour.</p></div>
+    </div>
+    <p class="note">📊 Có nguồn: travelers xem <b>141–277 trang</b>, <b>&gt;5 giờ</b> research, <b>89%</b> ghé nhiều site trước khi đặt (Expedia).</p>
+  </section>
+
+  <!-- ===== S3 · 1:00–1:50 Frequency + Core Action + Active User ===== -->
+  <section class="slide" data-title="Frequency · Core Action · Active User">
+    <span class="bracket">1:00 – 1:50 · Hành vi → Core Action</span>
+    <h2>Tần suất thấp — nền tảng của mọi quyết định</h2>
+    <div class="grid cols-2">
+      <div class="card soft"><h4>Hai nhịp tách biệt</h4>
+        <ul><li><b>Per-trip:</b> ~<b>2–4 lần/năm</b>, không đều <span class="pill">Có nguồn</span></li>
+        <li><b>Trong planning window:</b> dồn dập nhiều tuần, tăng tốc sát ngày đặt, rồi về 0</li></ul></div>
+      <div class="card"><h4>Core Action <span class="tag">tạo value</span></h4>
+        <p class="big">“Review &amp; <b style="color:var(--brand)">CHỐT</b> một itinerary AI tạo cho chuyến đi thật.”</p>
+        <p class="muted">→ event <code>itinerary_confirmed</code>. Không tính: mở app, xem 1 màn hình, chat vài câu.</p></div>
+    </div>
+    <h3>Active User</h3>
+    <p class="big">Một user là <b>active</b> khi <b>chốt/chỉnh ≥1 itinerary có giá trị</b> trong <b>một planning window (28 ngày trượt)</b>.</p>
+  </section>
+
+  <!-- ===== S4 · 1:50–2:40 Retention Metric ===== -->
+  <section class="slide" data-title="Retention Metric">
+    <span class="bracket">1:50 – 2:40 · Retention Metric</span>
+    <h2>Đo theo “chuyến tiếp theo”, KHÔNG theo “ngày mai”</h2>
+    <table>
+      <tr><th>Metric</th><th>Cadence</th><th>Đo cái gì</th></tr>
+      <tr><td><b>M1 · Per-trip retention</b> (chính)</td><td>Quý / cohort theo chuyến</td><td>% user quay lại lập &amp; chốt chuyến tiếp theo trong 3–6 tháng</td></tr>
+      <tr><td>M2 · Within-window</td><td>Trong window 28 ngày</td><td>Có đi hết một lần lập chuyến không (chống bỏ dở)</td></tr>
+      <tr><td>M3 · Nurture retention</td><td>Tháng</td><td>Hiện diện giữa hai chuyến (theo dõi giá / lưu điểm đến)</td></tr>
+    </table>
+    <div class="card" style="margin-top:14px; border-color:#4a2f23;">
+      <h4 class="neg">🚫 Vì sao loại D1/D7/D30 &amp; DAU/MAU</h4>
+      <p>Sản phẩm low-frequency: một user <b>rất hài lòng</b> vẫn không mở app ngày mai vì <b>chưa có chuyến để lập</b>. Daily retention sẽ chấm họ là “churn” → tối ưu nhầm (spam ép mở app). Đúng bẫy <b>Zillow</b> trong đề.</p>
+    </div>
+  </section>
+
+  <!-- ===== S5 · 2:40–4:20 Onboarding redesign ===== -->
+  <section class="slide" data-title="Onboarding → First Core Action">
+    <span class="bracket">2:40 – 4:20 · Onboarding → First Core Action</span>
+    <h2>Phát hiện: prototype Ngày 18 <span class="neg">thiếu hẳn core action</span></h2>
+    <p class="lead">Flow cũ nhảy từ “xem/sửa lịch trình” thẳng sang đặt dịch vụ — không có bước <b>“Đây là lịch trình của tôi”</b>. Value không bao giờ được “seal”.</p>
+    <h3>Friction Audit · Keep / Remove / Delay / Simplify / Add</h3>
+    <div class="grid cols-3">
+      <div class="card soft"><h4 class="warnc">Simplify</h4><p>Onboarding 2 dòng + 1 CTA · chat trống → destination cards · lịch 6 → 5 điểm</p></div>
+      <div class="card soft"><h4 class="warnc">Delay</h4><p>Quyền Calendar → dời xuống <b>sau</b> khi chốt (lúc đã có giá trị)</p></div>
+      <div class="card soft"><h4 class="pos">Add</h4><p>Nút <b>“✓ Chốt lịch trình này”</b> = core action + celebration</p></div>
+    </div>
+    <div class="flow" style="margin-top:16px">
+      <span class="node">Welcome</span><span class="arrow">→</span>
+      <span class="node">Destination cards</span><span class="arrow">→</span>
+      <span class="node">Chips</span><span class="arrow">→</span>
+      <span class="node">Skeleton</span><span class="arrow">→</span>
+      <span class="node">Lịch 5 điểm</span><span class="arrow">→</span>
+      <span class="node hot">★ CHỐT</span><span class="arrow">→</span>
+      <span class="node">🎉 Celebration</span>
+    </div>
+    <p class="kpi">⏱ <b>TTV ~90–120s</b> tới first core action <span class="muted">(Ngày 18: không có core action) · [ước tính từ prototype]</span></p>
+    <a class="btnlink" href="index.html" target="_blank">▶ Mở prototype — bấm mục “08 ✦ Day 20” để chạy thử</a>
+  </section>
+
+  <!-- ===== S6 · 4:20–5:15 North Star + Ladder ===== -->
+  <section class="slide" data-title="North Star &amp; Measurement Ladder">
+    <span class="bracket">4:20 – 5:15 · North Star</span>
+    <h2>North Star = giá trị lặp lại, không phải vanity</h2>
+    <div class="quote" style="font-style:normal">★ <b>Số chuyến đi được người dùng CHỐT thành công mỗi user mỗi năm</b></div>
+    <div class="grid cols-2" style="margin-top:12px">
+      <div class="card"><h4>Input Metrics (Leading)</h4>
+        <ul><li>Activation Rate (chốt chuyến đầu)</li><li>Per-trip Retention M1</li><li>Within-window M2 · Nurture M3</li><li>Time-to-Value</li></ul></div>
+      <div class="card"><h4>Đã loại — vì sao</h4>
+        <ul><li class="neg">DAU → spam ép mở app</li><li class="neg">Số itinerary tạo → tạo 10 nháp, chốt 0</li><li class="neg">GMV → business metric, ép đặt đắt</li></ul></div>
+    </div>
+    <p class="kpi" style="margin-top:12px"><b>Leading</b> (Input, TTV) → <b>North Star</b> → <b>Lagging</b> (LTV/GMV booking). <span class="muted">Trade-off canh: tăng số lượng mà bỏ chất lượng → theo dõi % chỉnh sau khi chốt.</span></p>
+  </section>
+
+  <!-- ===== S7 · 5:15–6:20 Nature/Nurture/Hook ===== -->
+  <section class="slide" data-title="Nature · Nurture · Hook">
+    <span class="bracket">5:15 – 6:20 · Nature, Nurture &amp; Hook</span>
+    <h2>Hook áp cho hành vi phụ — KHÔNG ép habit lập chuyến</h2>
+    <div class="grid cols-2">
+      <div class="card soft"><h4>Nature</h4><p>Lập chuyến: <b>2–4 lần/năm</b> — không tạo từ số 0.</p>
+        <h4 style="margin-top:10px">Nurture</h4><p>Theo dõi giá, lưu điểm đến, gợi ý mùa — tần suất cao hơn, giữ hiện diện giữa hai chuyến (giống Zestimate).</p></div>
+      <div class="card"><h4>Hook Loop (trên nurture)</h4>
+        <div class="flow" style="font-size:13.5px">
+          <span class="node">Trigger: “thèm đi” / báo giá</span><span class="arrow">→</span>
+          <span class="node">Action: mở app xem giá</span><span class="arrow">→</span>
+          <span class="node hot">Reward: The Hunt (săn giá tốt)</span><span class="arrow">→</span>
+          <span class="node">Investment: price-watch</span>
+        </div>
+        <p class="muted" style="margin-top:10px">Investment sinh trigger vòng sau (thông báo giá). Reward chính = <b>The Hunt</b>.</p></div>
+    </div>
+    <p class="note">✔ Kiểm tra tác động: cảnh báo giá là tiện ích thật (tiết kiệm tiền), chỉ bắn khi giá đổi — không spam, không dark pattern.</p>
+  </section>
+
+  <!-- ===== S8 · 6:20–7:15 Tracking ===== -->
+  <section class="slide" data-title="Metric Tracking Requirement">
+    <span class="bracket">6:20 – 7:15 · Tracking Requirement</span>
+    <h2>Event gắn thẳng lên flow → tính được metric</h2>
+    <div class="flow">
+      <span class="node">onboarding_start</span><span class="arrow">→</span>
+      <span class="node">destination_selected</span><span class="arrow">→</span>
+      <span class="node">context_chips_selected</span><span class="arrow">→</span>
+      <span class="node">itinerary_created</span><span class="arrow">→</span>
+      <span class="node hot">★ itinerary_confirmed</span>
+    </div>
+    <p class="muted" style="margin-top:4px">→ post-action: <span class="pill">price_watch_added (M3)</span><span class="pill">calendar_permission_granted</span><span class="pill">share_initiated</span> · <span class="muted">prototype trang 08 bắn đúng chuỗi này (event log sống).</span></p>
+    <h3>Tiêu chí nghiệm thu</h3>
+    <div class="grid cols-2">
+      <div class="card soft"><ul><li>Event chỉ bắn khi hành vi <b>thật</b> xảy ra</li><li><code>itinerary_confirmed</code> <b>idempotent</b> theo trip_id (refresh/retry không trùng)</li></ul></div>
+      <div class="card soft"><ul><li>Đủ identity + properties để tính metric</li><li>Timestamp/timezone nhất quán · không thu dữ liệu cá nhân thừa</li></ul></div>
+    </div>
+  </section>
+
+  <!-- ===== S9 · 7:15–8:00 Before/After + closing ===== -->
+  <section class="slide" data-title="Before / After · Thay đổi quan trọng nhất">
+    <span class="bracket">7:15 – 8:00 · Before / After</span>
+    <h2>Thay đổi quan trọng nhất</h2>
+    <table>
+      <tr><th>Tiêu chí</th><th>Before (Ngày 18)</th><th class="pos">After (Day 20)</th></tr>
+      <tr><td>Core action</td><td class="neg">❌ Không có</td><td class="pos">✅ Nút “Chốt” = itinerary_confirmed</td></tr>
+      <tr><td>Bước tới core action</td><td>∞</td><td>6 bước · TTV ~90–120s</td></tr>
+      <tr><td>Quyền Calendar</td><td>Hỏi ngay onboarding</td><td>Delay sau khi chốt</td></tr>
+      <tr><td>Nhập điểm đến</td><td>Chat trống</td><td>Destination cards</td></tr>
+      <tr><td>Lịch trình đầu</td><td>6 điểm dày đặc</td><td>5 điểm giãn cách + celebration</td></tr>
+    </table>
+    <div class="card" style="margin-top:14px; border-color:var(--brand)">
+      <p class="big" style="margin:0">💡 Ngày 18 dừng ở <b>“xem lịch trình”</b>. Day 20 thêm khoảnh khắc <b style="color:var(--brand)">“seal value” (Chốt)</b> — biến product từ <i>trình diễn</i> thành <i>tạo &amp; đo được giá trị lặp lại</i>, tôn trọng nhịp tự nhiên 2–4 lần/năm.</p>
+    </div>
+    <a class="btnlink" href="index.html" target="_blank">▶ Prototype trang 08</a>
+    <a class="btnlink ghost" href="README.md" target="_blank">📁 6 bài + tài liệu</a>
+  </section>
+
+</div>
+
+<div id="nav">
+  <button class="nbtn" id="prev" onclick="go(-1)" title="Trước (←)">‹</button>
+  <div id="title-mini"></div>
+  <div style="display:flex; align-items:center; gap:14px;">
+    <span id="counter"></span>
+    <button class="nbtn" id="next" onclick="go(1)" title="Sau (→)">›</button>
+  </div>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  let i = 0;
+  function render(){
+    slides.forEach((s,n)=>s.classList.toggle('active', n===i));
+    document.getElementById('counter').textContent = (i+1)+' / '+slides.length;
+    document.getElementById('title-mini').innerHTML = slides[i].dataset.title || '';
+    document.getElementById('bar').style.width = ((i)/(slides.length-1)*100)+'%';
+    document.getElementById('prev').disabled = i===0;
+    document.getElementById('next').disabled = i===slides.length-1;
+  }
+  function go(d){ i = Math.min(slides.length-1, Math.max(0, i+d)); render(); }
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){ e.preventDefault(); go(1); }
+    if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); go(-1); }
+    if(e.key==='Home'){ i=0; render(); } if(e.key==='End'){ i=slides.length-1; render(); }
+  });
+  render();
+</script>
+</body>
+</html>
