@@ -18,9 +18,9 @@
 - [x] **Bài 2 — Core Action, Active User & Retention Metric** → [`02-Retention-Metric.md`](02-Retention-Metric.md) ✅ *(core action = chốt itinerary; metric per-trip + within-window + nurture)*
 - [x] **Bài 3 — Onboarding Audit + Redesign + Before/After** → [`03-Onboarding-First-Core-Action.md`](03-Onboarding-First-Core-Action.md) ✅ *(audit Day18, friction audit, redesign flow, TTV ~90–120s)*
 - [x] **Chỉnh sửa prototype** → trang **`08` trong [`index.html`](index.html)** ✅ *(flow redesign tương tác “After”: Welcome → Destination cards → Chips → Skeleton → Itinerary 5 điểm → **nút Chốt = core action** → Celebration; có Undo/Tạo lại/Đổi điểm đến + **event log trực tiếp** cho Bài 6. Giữ nguyên p00–p07 làm “Before”.)*
-- [ ] Bài 4 — Measurement Ladder & North Star Metric *(Văn)*
-- [ ] Bài 5 — Nature vs Nurture & Hook Model *(Văn)*
-- [ ] Bài 6 — Metric Tracking Requirement *(Văn — đã có sẵn bảng event ở trang 08 + cuối Bài 2/3)*
+- [x] Bài 4 — Measurement Ladder & North Star Metric *(Văn)*
+- [x] Bài 5 — Nature vs Nurture & Hook Model *(Văn)*
+- [x] Bài 6 — Metric Tracking Requirement *(Văn — đã có sẵn bảng event ở trang 08 + cuối Bài 2/3)*
 - [ ] Demo path Day 20 ≤ 8 phút + bật GitHub Pages lấy link nộp *(Anh)*
 
 ## Quyết định nền tảng (cả nhóm bám theo)
