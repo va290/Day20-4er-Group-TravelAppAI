@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Travel Planner — Human-Centered AI Design (Day 18)</title>
+<link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+<div class="app">
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar">
+    <div class="brand">AI Travel Planner
+      <small>Day 18 · Human-Centered AI Design</small>
+      <small>Lát cắt: Lập & chỉnh lịch trình → review → đặt dịch vụ</small>
+    </div>
+    <nav class="nav" id="nav">
+      <button data-page="p00" class="active"><span class="code">00</span> Flow map &amp; phạm vi</button>
+      <button data-page="p01"><span class="code">01</span> Onboarding (T0)</button>
+      <button data-page="p02"><span class="code">02</span> Luồng chính · Ask (T2)</button>
+      <button data-page="p03"><span class="code">03</span> Review &amp; Agency (T3·T9)</button>
+      <button data-page="p04"><span class="code">04</span> Failure &amp; Recovery (T6·T7)</button>
+      <button data-page="p05"><span class="code">05</span> Feedback loop 2×2</button>
+      <button data-page="p06"><span class="code">06</span> Design rationale</button>
+      <button data-page="p07"><span class="code">07</span> Demo path (5')</button>
+    </nav>
+    <div class="team">
+      <div class="team-title">Nhóm thực hiện</div>
+      <ul>
+        <li>Nguyễn Viết Du <span>2A202600800</span></li>
+        <li>Đỗ Việt Anh <span>2A202601008</span></li>
+        <li>Nguyễn Kim Hoàng <span>2A202600987</span></li>
+        <li>Nguyễn Lê Văn <span>2A202600569</span></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+
+    <!-- ============ 00 FLOW MAP ============ -->
+    <section class="page active" id="p00">
+      <h1>00 — Flow map &amp; phạm vi tính năng</h1>
+      <p class="lead">Một lát cắt duy nhất, xuyên suốt vòng đời trải nghiệm. Không dựng cả app du lịch.</p>
+
+      <h3>Vòng đời trải nghiệm</h3>
+      <div class="flowmap">
+        <div class="flow-node"><div class="ph">A · Onboarding</div>Lần đầu mở tính năng. Thiết lập kỳ vọng.</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><div class="ph">B · During</div>AI làm rõ nhu cầu, đề xuất, hành động.</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><div class="ph">C · After</div>Review kết quả, bằng chứng, agency.</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><div class="ph">D · Feedback &amp; Recovery</div>Phát hiện lỗi → sửa → tiếp tục mục tiêu.</div>
+      </div>
+
+      <h3>5 kịch bản trong lát cắt</h3>
+      <div class="grid cols-2">
+        <div class="card"><h4>T0 — Onboarding <span class="tag">Bắt buộc</span></h4><p>Thiết lập kỳ vọng: AI làm gì, không tự làm gì, cần dữ liệu nào.</p></div>
+        <div class="card"><h4>T2 — AI hỏi trước khi lập kế hoạch <span class="tag">During · Ask</span></h4><p>Yêu cầu mơ hồ → AI hỏi 3 thông tin quan trọng nhất, kèm lý do.</p></div>
+        <div class="card"><h4>T3 — Tiêu chí khách sạn xung đột <span class="tag">During · Explainability</span></h4><p>Lớp bằng chứng cho cách xếp hạng; người dùng chỉnh trọng số.</p></div>
+        <div class="card"><h4>T6 — Lịch trình quá dày <span class="tag">Failure &amp; Recovery</span></h4><p>Vòng khôi phục hoàn chỉnh (giai đoạn D).</p></div>
+        <div class="card"><h4>T7 — Thông tin lỗi thời <span class="tag">Failure · Explainability</span></h4><p>AI tự nêu giới hạn dữ liệu + đường thay thế.</p></div>
+        <div class="card"><h4>T9 — Đặt dịch vụ <span class="tag">Agency</span></h4><p>Ranh giới Act / Ask / Don't Act khi đặt chỗ &amp; thanh toán.</p></div>
+      </div>
+
+      <h3>Phạm vi</h3>
+      <div class="grid cols-2">
+        <div class="card"><h4 class="ok">✔ Trong phạm vi</h4>
+          <ul class="clean">
+            <li>Làm rõ nhu cầu chuyến đi</li>
+            <li>Đề xuất &amp; so sánh khách sạn (có giải thích)</li>
+            <li>Tạo / chỉnh lịch trình theo ngày</li>
+            <li>Soạn thông tin đặt chỗ (chưa thanh toán)</li>
+          </ul>
+        </div>
+        <div class="card"><h4 class="danger">✘ Ngoài phạm vi</h4>
+          <ul class="clean">
+            <li>Tự thanh toán / quẹt thẻ</li>
+            <li>Toàn bộ tài khoản, lịch sử chuyến đi</li>
+            <li>Chat đa năng trả lời mọi câu hỏi</li>
+            <li>Tích hợp API/booking thật</li>
+          </ul>
+        </div>
+      </div>
+
+      <hr class="divider" />
+      <div class="rationale">
+        <h4>Vì sao chọn lát cắt này</h4>
+        <p>Lập lịch trình là nơi AI <strong>dễ sai</strong> (thiếu bối cảnh, dữ liệu lỗi thời) nhưng hậu quả <strong>có thể hoàn tác</strong> — lý tưởng để thể hiện đủ Act/Ask/Don't Act, bằng chứng và recovery mà không phải mô phỏng cả sản phẩm.</p>
+      </div>
+    </section>
+
+    <!-- ============ 01 ONBOARDING ============ -->
+    <section class="page" id="p01">
+      <h1>01 — Onboarding <span class="tag">T0 · Bắt buộc</span></h1>
+      <p class="lead">Lần đầu mở tính năng. Mục tiêu: thiết lập kỳ vọng đúng, KHÔNG biến thành biểu mẫu dài.</p>
+
+      <div class="row" style="align-items:flex-start; gap:24px;">
+        <div class="screen" id="onbScreen">
+          <div class="statusbar"><span>9:41</span><span>Travel Planner</span></div>
+
+          <!-- step 1 -->
+          <div id="onb1">
+            <h3 style="margin-top:4px">👋 Mình giúp bạn lên kế hoạch chuyến đi</h3>
+            <div class="callout ok">AI <strong>làm được</strong>: gợi ý &amp; so sánh khách sạn, tạo lịch trình theo ngày, ước tính ngân sách, soạn thông tin đặt chỗ.</div>
+            <div class="callout danger">AI <strong>không tự làm</strong>: đặt phòng &amp; thanh toán nếu bạn chưa xác nhận. Bạn luôn duyệt bước cuối.</div>
+            <div class="callout warn">AI có thể <strong>sai</strong>: giờ mở cửa, giá, chỗ trống có thể đã cũ — mình sẽ báo khi không chắc.</div>
+            <div class="row end" style="margin-top:14px">
+              <button class="btn ghost" onclick="onb('skip')">Bỏ qua, tự nhập sau</button>
+              <button class="btn primary" onclick="onb(2)">Tiếp tục</button>
+            </div>
+          </div>
+
+          <!-- step 2: data & permission (progressive) -->
+          <div id="onb2" class="hidden">
+            <h3 style="margin-top:4px">Bạn muốn bắt đầu từ đâu?</h3>
+            <p class="muted" style="font-size:13px">Chỉ cần 1 thông tin là đủ để bắt đầu. Có thể bổ sung sau.</p>
+            <div class="row" style="margin:10px 0">
+              <button class="btn" onclick="onb('go')">Tôi đã biết điểm đến</button>
+              <button class="btn" onclick="onb('go')">Tôi chỉ muốn gợi ý</button>
+            </div>
+            <div class="evidence">
+              <strong>Quyền truy cập (tuỳ chọn):</strong>
+              <div class="slider-row" style="grid-template-columns:1fr auto"><span>📍 Vị trí — gợi ý điểm gần bạn</span><button class="btn sm" onclick="toast('Đã bật vị trí — có thể tắt bất cứ lúc nào')">Cho phép</button></div>
+              <div class="slider-row" style="grid-template-columns:1fr auto"><span>📅 Lịch — tránh trùng ngày bận</span><button class="btn sm" onclick="toast('Đã bỏ qua. AI sẽ không đọc lịch.')">Để sau</button></div>
+              <p class="note muted" style="font-size:11.5px; margin-top:8px">Bạn có thể rút quyền bất cứ lúc nào trong Cài đặt. AI hoạt động được kể cả khi bạn từ chối hết.</p>
+            </div>
+            <div class="row end" style="margin-top:14px">
+              <button class="btn primary" onclick="goto('p02')">Bắt đầu →</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:1; min-width:280px">
+          <div class="rationale">
+            <h4>Rationale — Onboarding</h4>
+            <dl>
+              <dt>AI biết gì?</dt><dd>Khả năng của chính nó; chưa biết gì về sở thích người dùng.</dd>
+              <dt>AI chưa biết / không chắc?</dt><dd>Điểm đến, ngân sách, phong cách, người đi cùng.</dd>
+              <dt>Giả định?</dt><dd>Người dùng chưa rõ ranh giới năng lực của AI.</dd>
+              <dt>Điều gì có thể sai?</dt><dd>Người dùng kỳ vọng AI tự đặt phòng → mất kiểm soát/tiền.</dd>
+              <dt>Act / Ask / Don't?</dt><dd><span class="chip dont">Don't Act</span> ở onboarding: chỉ thiết lập kỳ vọng, không thu thập dữ liệu ép buộc.</dd>
+              <dt>Kiểm soát của người dùng</dt><dd>Có thể bỏ qua, từ chối quyền, rút quyền sau.</dd>
+            </dl>
+          </div>
+          <div class="callout">💡 <strong>Implicit system feedback:</strong> ba callout dùng màu (xanh/đỏ/vàng) thay vì đoạn text dài — người dùng "đọc" được ranh giới năng lực qua màu &amp; thứ tự ưu tiên.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 02 MAIN FLOW / ASK ============ -->
+    <section class="page" id="p02">
+      <h1>02 — Luồng chính: AI làm rõ nhu cầu <span class="tag">T2 · Ask</span></h1>
+      <p class="lead">Yêu cầu mơ hồ → AI không vội tạo lịch trình. Nó hỏi đúng thông tin quan trọng nhất, kèm lý do.</p>
+
+      <div class="steps" id="askSteps">
+        <span class="step cur">1 · Yêu cầu mơ hồ</span>
+        <span class="step">2 · AI hiểu &amp; hỏi lại</span>
+        <span class="step">3 · Người dùng trả lời</span>
+        <span class="step">4 · AI tạo nháp</span>
+      </div>
+
+      <div class="row" style="align-items:flex-start; gap:24px;">
+        <div class="screen" id="askScreen">
+          <div class="statusbar"><span>Đà Nẵng?</span><span id="askState"><span class="state-pill"><span class="dot-pulse"></span> AI đang đọc yêu cầu</span></span></div>
+          <div class="bubble user">Mình muốn đi Đà Nẵng nghỉ ngơi vài ngày 🌊</div>
+
+          <div id="askA" class="hidden">
+            <div class="bubble ai">
+              <div class="who">AI · đang hiểu</div>
+              Mình hiểu bạn muốn một chuyến <strong>nghỉ dưỡng ở Đà Nẵng</strong>. Để khỏi đoán sai, mình cần 3 thông tin quan trọng nhất (bỏ qua được):
+            </div>
+            <div class="bubble ai">
+              <div class="who">AI hỏi — vì sao cần</div>
+              <div class="slider-row" style="grid-template-columns:1fr auto"><span>① Đi mấy ngày? <span class="muted">→ quyết số điểm/ngày</span></span><button class="btn sm" onclick="askPick(this,'3 ngày 2 đêm')">3N2Đ</button></div>
+              <div class="slider-row" style="grid-template-columns:1fr auto"><span>② Đi với ai? <span class="muted">→ ảnh hưởng nhịp độ</span></span><button class="btn sm" onclick="askPick(this,'2 người, cặp đôi')">Cặp đôi</button></div>
+              <div class="slider-row" style="grid-template-columns:1fr auto"><span>③ Ngân sách? <span class="muted">→ lọc khách sạn</span></span><button class="btn sm" onclick="askPick(this,'tầm trung')">Tầm trung</button></div>
+              <p class="note muted" style="font-size:11.5px">Mình hỏi <em>3</em> câu này thôi vì chúng đổi kết quả nhiều nhất — không hỏi hết mọi thứ.</p>
+            </div>
+            <div class="row end"><button class="btn ghost sm" onclick="goto('p03')">Bỏ qua, cứ tạo nháp →</button></div>
+          </div>
+
+          <div id="askUser" class="hidden"></div>
+
+          <div id="askDraft" class="hidden">
+            <div class="bubble ai"><div class="who">AI · đã đủ thông tin</div>Đã rõ! Mình tạo <strong>bản nháp lịch trình 3N2Đ cho cặp đôi, tầm trung</strong>. Đây là <em>đề xuất</em> — bạn review &amp; chỉnh ở bước sau.</div>
+            <div class="row end"><button class="btn primary" onclick="goto('p03')">Xem bản nháp →</button></div>
+          </div>
+        </div>
+
+        <div style="flex:1; min-width:280px">
+          <div class="rationale">
+            <h4>Rationale — T2 (Ask)</h4>
+            <dl>
+              <dt>AI biết gì?</dt><dd>Điểm đến (Đà Nẵng), mục đích (nghỉ ngơi).</dd>
+              <dt>Chưa chắc?</dt><dd>Số ngày, người đi cùng, ngân sách → đủ để tạo lịch trình sai.</dd>
+              <dt>Giả định?</dt><dd>Nếu tự tạo ngay sẽ giả định "3 ngày, 2 người, tầm trung" mà không nói ra.</dd>
+              <dt>Hậu quả nếu sai?</dt><dd>Lịch trình lệch nhu cầu → người dùng phải làm lại nhiều.</dd>
+              <dt>Act / Ask / Don't?</dt><dd><span class="chip ask">Ask</span> — thiếu thông tin có tác động lớn, nên hỏi <em>tối thiểu</em> trước khi hành động.</dd>
+              <dt>Feedback?</dt><dd><strong>Explicit user→system</strong>: người dùng chọn câu trả lời. <strong>Explicit system→user</strong>: AI nói rõ "đây là đề xuất, review ở bước sau".</dd>
+            </dl>
+          </div>
+          <div class="callout warn">💡 Chống "form dài": chỉ 3 câu, mỗi câu kèm <em>vì sao cần</em>, và luôn có lối "Bỏ qua, cứ tạo nháp".</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 03 REVIEW & AGENCY ============ -->
+    <section class="page" id="p03">
+      <h1>03 — Review, Explainability &amp; Agency <span class="tag">T3 · T9</span></h1>
+      <p class="lead">Người dùng xem kết quả, hiểu vì sao AI xếp hạng vậy, chỉnh tiêu chí, rồi quyết định đặt dịch vụ.</p>
+
+      <h2>T3 — Vì sao khách sạn này được ưu tiên? <span class="tag">Explainability</span></h2>
+      <div class="row" style="align-items:flex-start; gap:24px;">
+        <div class="screen" style="max-width:520px">
+          <div class="statusbar"><span>3 khách sạn phù hợp</span><span class="muted">đề xuất</span></div>
+
+          <div id="hotelList">
+            <div class="option top" data-h="beach">
+              <div class="row" style="justify-content:space-between"><span class="name">🏖️ Sea Pearl Hotel</span><span class="rank">#1 · AI đề xuất</span></div>
+              <div class="why">Gần biển nhất (80m) · 4.2★ · 1.4tr/đêm</div>
+            </div>
+            <div class="option" data-h="cheap">
+              <div class="row" style="justify-content:space-between"><span class="name">💰 City Stay Inn</span><span class="rank">#2</span></div>
+              <div class="why">Rẻ nhất (0.8tr/đêm) · 4.0★ · cách biển 1.2km</div>
+            </div>
+            <div class="option" data-h="rated">
+              <div class="row" style="justify-content:space-between"><span class="name">⭐ Grand Riverside</span><span class="rank">#3</span></div>
+              <div class="why">Đánh giá cao nhất (4.7★) · 1.9tr/đêm · cách biển 0.9km</div>
+            </div>
+            <button class="btn sm ghost" style="margin-top:8px" onclick="toggle('evBox')">Vì sao xếp hạng vậy? ▾</button>
+          </div>
+
+          <div id="evBox" class="hidden" style="margin-top:12px">
+            <div class="evidence">
+              <strong>Bằng chứng — tiêu chí &amp; trọng số AI đang dùng</strong>
+              <p class="muted" style="font-size:11.5px; margin:6px 0 10px">AI ưu tiên "gần biển" vì bạn nói <em>nghỉ dưỡng</em>. Bạn có thể đổi trọng số:</p>
+              <div class="slider-row"><span>Gần biển</span><input type="range" min="0" max="100" value="70" oninput="rerank('beach',this.value)" id="wBeach"><span id="vBeach">70</span></div>
+              <div class="slider-row"><span>Giá rẻ</span><input type="range" min="0" max="100" value="30" oninput="rerank('cheap',this.value)" id="wCheap"><span id="vCheap">30</span></div>
+              <div class="slider-row"><span>Đánh giá</span><input type="range" min="0" max="100" value="45" oninput="rerank('rated',this.value)" id="wRated"><span id="vRated">45</span></div>
+              <p class="note muted" id="rerankMsg" style="font-size:11.5px"></p>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:1; min-width:260px">
+          <div class="rationale">
+            <h4>Rationale — T3</h4>
+            <dl>
+              <dt>AI biết gì?</dt><dd>Giá, khoảng cách biển, điểm đánh giá (dữ kiện).</dd>
+              <dt>Suy luận của AI?</dt><dd>Gán trọng số "gần biển" cao vì mục đích nghỉ dưỡng (đây là <em>suy luận</em>, không phải dữ kiện).</dd>
+              <dt>Điều gì có thể sai?</dt><dd>Trọng số không khớp ý người dùng → đề xuất lệch.</dd>
+              <dt>Act/Ask/Don't?</dt><dd><span class="chip act">Act</span> — xếp hạng là gợi ý rủi ro thấp, dễ thấy &amp; dễ đổi, nên AI tự làm rồi để người dùng chỉnh.</dd>
+              <dt>Feedback?</dt><dd><strong>Explicit user→system</strong>: kéo slider = sửa tiêu chí. Hệ thống re-rank ngay (<strong>explicit system→user</strong>).</dd>
+            </dl>
+          </div>
+          <div class="callout">Phân biệt rõ <strong>dữ kiện</strong> (giá, sao) vs <strong>suy luận của AI</strong> (trọng số) — đúng yêu cầu mục C.</div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <h2>T9 — Đặt dịch vụ: ranh giới agency <span class="tag">Agency</span></h2>
+      <div class="row" style="align-items:flex-start; gap:24px;">
+        <div class="screen" style="max-width:520px">
+          <div class="statusbar"><span>Đặt: Sea Pearl Hotel</span><span class="muted">3N2Đ</span></div>
+          <div class="evidence" style="margin-bottom:12px">
+            <div class="row" style="justify-content:space-between"><span>① AI tự điền form (tên, ngày, số khách)</span><span class="chip act">Act</span></div>
+            <p class="muted" style="font-size:11.5px; margin:6px 0">Rủi ro thấp, dễ thấy &amp; sửa. <button class="btn sm ghost" onclick="toast('AI đã điền: 2 khách · 12–14/07 · phòng Deluxe. Bạn sửa được mọi ô.')">Xem AI đã điền gì</button></p>
+            <hr class="divider" style="margin:10px 0">
+            <div class="row" style="justify-content:space-between"><span>② Giữ phòng (có thể huỷ free 24h)</span><span class="chip ask">Ask</span></div>
+            <p class="muted" style="font-size:11.5px; margin:6px 0">Có tác động nhưng hoàn tác được → AI xin xác nhận.
+              <button class="btn sm" id="holdBtn" onclick="holdRoom()">Xác nhận giữ phòng</button></p>
+            <hr class="divider" style="margin:10px 0">
+            <div class="row" style="justify-content:space-between"><span>③ Thanh toán bằng thẻ</span><span class="chip dont">Don't Act</span></div>
+            <p class="muted" style="font-size:11.5px; margin:6px 0">Rủi ro cao, khó hoàn tác → AI <strong>không bao giờ</strong> tự làm. Mở trang thanh toán chính chủ để bạn tự thực hiện.</p>
+            <button class="btn primary" onclick="toast('Chuyển tới trang thanh toán của khách sạn — bạn tự nhập thẻ. AI dừng tại đây.')">Tôi tự thanh toán →</button>
+          </div>
+          <div id="holdResult" class="hidden"></div>
+        </div>
+        <div style="flex:1; min-width:260px">
+          <div class="rationale">
+            <h4>Rationale — T9 (đủ 3 mức)</h4>
+            <dl>
+              <dt><span class="chip act">Act</span></dt><dd>Điền form: rủi ro thấp, dễ undo → AI tự làm.</dd>
+              <dt><span class="chip ask">Ask</span></dt><dd>Giữ phòng: có tác động nhưng huỷ free 24h → xin xác nhận.</dd>
+              <dt><span class="chip dont">Don't Act</span></dt><dd>Thanh toán: tiền thật, khó hoàn → AI không tự làm dù tiện.</dd>
+              <dt>Vì sao không ép Act?</dt><dd>"Không ép AI tự làm việc nguy hiểm chỉ để đủ Act" — chọn hành động nhỏ &amp; hữu ích.</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 04 FAILURE & RECOVERY ============ -->
+    <section class="page" id="p04">
+      <h1>04 — Failure &amp; Recovery <span class="tag">T6 · T7</span></h1>
+      <p class="lead">Khi AI sai, flow không dừng ở "báo lỗi". Người dùng chỉ ra vấn đề cụ thể và tiếp tục tới mục tiêu.</p>
+
+      <h2>T6 — Lịch trình quá dày → vòng khôi phục hoàn chỉnh</h2>
+      <div class="steps" id="recSteps">
+        <span class="step cur">1 · AI sai</span>
+        <span class="step">2 · Phát hiện</span>
+        <span class="step">3 · Người dùng nêu vấn đề</span>
+        <span class="step">4 · Hệ thống xác nhận</span>
+        <span class="step">5 · Đề xuất sửa</span>
+        <span class="step">6 · Tiếp tục mục tiêu</span>
+        <span class="step">7 · Ghi nhớ gì</span>
+      </div>
+
+      <div class="row" style="align-items:flex-start; gap:24px;">
+        <div class="screen" style="max-width:520px">
+          <div class="statusbar"><span>Lịch trình · Ngày 2</span><span id="recState" class="muted">bản nháp</span></div>
+
+          <!-- itinerary day 2 -->
+          <div id="recDraft">
+            <div class="callout warn" id="recSelfFlag">⚠️ <strong>AI tự nêu:</strong> Ngày 2 có 6 điểm &amp; ~4h di chuyển — có thể hơi dày. Bạn thấy ổn không?</div>
+            <div class="evidence">
+              <strong>Ngày 2 (hiện tại)</strong>
+              <ul class="clean">
+                <li>07:00 Bà Nà Hills (cả sáng)</li>
+                <li>12:30 Hội An (cách 40km)</li>
+                <li>15:00 Rừng dừa Bảy Mẫu</li>
+                <li>17:00 Chùa Linh Ứng (ngược về ĐN 30km)</li>
+                <li>19:00 Cầu Rồng</li>
+                <li>20:30 Chợ đêm Sơn Trà</li>
+              </ul>
+            </div>
+            <p class="muted" style="font-size:12px; margin-top:10px">Vấn đề cụ thể bạn thấy là gì?</p>
+            <div class="row">
+              <button class="btn sm" onclick="recFix('move')">Quá nhiều di chuyển</button>
+              <button class="btn sm" onclick="recFix('rest')">Thiếu thời gian nghỉ</button>
+              <button class="btn sm" onclick="recFix('much')">Quá nhiều điểm</button>
+            </div>
+            <p class="note muted" style="font-size:11.5px; margin-top:8px">Không chỉ có nút "không hữu ích" — người dùng chỉ ra <em>loại</em> vấn đề để AI sửa đúng chỗ.</p>
+          </div>
+
+          <!-- recovery result -->
+          <div id="recResult" class="hidden"></div>
+        </div>
+
+        <div style="flex:1; min-width:260px">
+          <div class="rationale">
+            <h4>Rationale — T6 (Recovery)</h4>
+            <dl>
+              <dt>AI sai gì?</dt><dd>Tạo lịch hấp dẫn nhưng không thực tế về thời gian/di chuyển.</dd>
+              <dt>Phát hiện thế nào?</dt><dd>Hệ thống <strong>tự nêu</strong> (so giờ di chuyển) + người dùng xác nhận.</dd>
+              <dt>Sửa được không?</dt><dd>Dễ — chỉ là bản nháp, mọi thay đổi reversible.</dd>
+              <dt>Feedback?</dt><dd><strong>Explicit user→system</strong>: chọn loại vấn đề. <strong>Implicit user→system</strong>: nếu người dùng tự xoá 1 điểm (xem chú thích bên dưới).</dd>
+              <dt>Ghi nhớ gì?</dt><dd>Hệ thống nói rõ: "ghi nhớ bạn thích lịch thưa cho chuyến này" — và hỏi có áp dụng lần sau không.</dd>
+            </dl>
+          </div>
+          <div class="callout">💡 <strong>Implicit user→system (chú thích):</strong> Khi người dùng kéo xoá 1 điểm khỏi ngày 2, hệ thống <em>ghi nhận tín hiệu "lịch đang quá dày"</em> nhưng <strong>không</strong> coi đó là sự thật chuẩn — có thể họ chỉ đổi ý. Sẽ hỏi lại trước khi cá nhân hoá.</div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <h2>T7 — AI dùng thông tin lỗi thời <span class="tag">Explainability</span></h2>
+      <div class="row" style="align-items:flex-start; gap:24px;">
+        <div class="screen" style="max-width:520px">
+          <div class="statusbar"><span>Gợi ý ăn tối</span><span class="muted">Ngày 1</span></div>
+          <div class="bubble ai">
+            <div class="who">AI · đề xuất kèm cảnh báo</div>
+            🍜 <strong>Quán Bún Chả Cá 109</strong> — gần khách sạn.
+            <div style="margin-top:8px"><span class="badge-stale">⚠ Giờ mở cửa cập nhật 3 tháng trước</span></div>
+          </div>
+          <div class="evidence" style="margin-top:6px">
+            <strong>Độ tin của thông tin này:</strong>
+            <ul class="clean">
+              <li>Địa chỉ &amp; món: <span class="ok">đáng tin</span> (nguồn ổn định)</li>
+              <li>Giờ mở cửa 17:00–22:00: <span class="warn">cũ — nên kiểm tra</span></li>
+              <li>Giá ~50k: <span class="warn">ước tính</span></li>
+            </ul>
+            <p class="muted" style="font-size:11.5px">AI không chắc quán còn mở. Bạn muốn làm gì?</p>
+            <div class="row">
+              <button class="btn sm" onclick="t7('call')">Gọi xác nhận</button>
+              <button class="btn sm" onclick="t7('alt')">Xem 2 quán thay thế</button>
+              <button class="btn sm ghost" onclick="t7('keep')">Vẫn giữ, tôi tự kiểm tra</button>
+            </div>
+          </div>
+          <div id="t7Result" class="hidden" style="margin-top:10px"></div>
+        </div>
+        <div style="flex:1; min-width:260px">
+          <div class="rationale">
+            <h4>Rationale — T7</h4>
+            <dl>
+              <dt>AI không chắc gì?</dt><dd>Giờ mở cửa, giá — dữ liệu có thể lỗi thời.</dd>
+              <dt>Vì sao không giấu?</dt><dd>Trả lời tự tin mà sai sẽ ảnh hưởng chuyến đi → hiển thị <strong>chất lượng bằng chứng</strong> + thời điểm cập nhật.</dd>
+              <dt>Act/Ask/Don't?</dt><dd><span class="chip ask">Ask</span> — đề xuất nhưng kèm cảnh báo &amp; <strong>đường thay thế</strong> thay vì khẳng định.</dd>
+              <dt>Bằng chứng</dt><dd>Mốc "cập nhật 3 tháng trước" + phân tầng độ tin = lớp explainability bắt buộc.</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 05 FEEDBACK 2x2 ============ -->
+    <section class="page" id="p05">
+      <h1>05 — Vòng feedback hai chiều (ma trận 2×2)</h1>
+      <p class="lead">Đủ 4 loại tín hiệu, mỗi ô gắn với một thao tác thật trong prototype + rationale.</p>
+
+      <table class="matrix">
+        <thead>
+          <tr><th style="width:90px"></th><th>Explicit — Tường minh</th><th>Implicit — Ngầm định</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>User → System</th>
+            <td>
+              <span class="lbl">Có ở: T3, T6, T7</span>
+              Kéo slider đổi trọng số tiêu chí (T3); chọn "Ngày 2 quá nhiều di chuyển" (T6); từ chối quán &amp; chọn thay thế (T7).
+              <span class="note"><strong>Khi nào:</strong> tại điểm dừng tự nhiên (sau khi AI ra kết quả). <strong>Vì sao explicit:</strong> ý định rõ, dùng để sửa ngay.</span>
+            </td>
+            <td>
+              <span class="lbl">Có ở: T6 (chú thích)</span>
+              Người dùng kéo <em>xoá 1 điểm</em> khỏi lịch → hệ thống đánh dấu sự kiện "lịch có thể quá dày".
+              <span class="note"><strong>Diễn giải dự định:</strong> chỉ là <em>gợi ý</em>, không phải nhãn đúng/sai. Hệ thống hỏi lại trước khi cá nhân hoá. <strong>Tín hiệu có thể đa nghĩa</strong> (đổi ý ≠ AI sai).</span>
+            </td>
+          </tr>
+          <tr>
+            <th>System → User</th>
+            <td>
+              <span class="lbl">Có ở: T2, T6, T9</span>
+              "Đây là đề xuất, review ở bước sau" (T2); "Đã giãn ngày 2, bỏ 1 điểm — xem ngày 3?" (T6); xác nhận trước khi giữ phòng (T9).
+              <span class="note"><strong>Nội dung:</strong> trạng thái + điều vừa làm + bước tiếp theo. <strong>Vì sao explicit:</strong> hành động có hệ quả, cần minh bạch.</span>
+            </td>
+            <td>
+              <span class="lbl">Có khắp UI</span>
+              Màu callout (xanh/đỏ/vàng) ở onboarding; chip Act/Ask/Don't; badge "cập nhật 3 tháng trước"; nút "Thanh toán" để mờ &amp; cần xác nhận; progressive disclosure ("Vì sao?").
+              <span class="note"><strong>Cue truyền đạt:</strong> mức rủi ro &amp; độ tin — người dùng hiểu mà không bị ngắt lời.</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout ok" style="margin-top:16px">✔ <strong>Một vòng feedback hoàn chỉnh</strong> (T6): AI sai → tự nêu/người dùng phát hiện → người dùng chỉ loại lỗi → hệ thống xác nhận đã hiểu → đề xuất sửa → người dùng tiếp tục → hệ thống nói rõ ghi nhớ gì.</div>
+
+      <div class="rationale" style="margin-top:16px">
+        <h4>Nguyên tắc áp dụng</h4>
+        <dl>
+          <dt>Dễ &amp; đúng ngữ cảnh</dt><dd>Feedback đặt ngay cạnh kết quả, không tách ra form riêng.</dd>
+          <dt>Cue ngầm trước</dt><dd>Dùng màu/badge trước, chỉ ngắt lời (dialog xác nhận) khi rủi ro cao.</dd>
+          <dt>Minh bạch &amp; kiểm soát</dt><dd>Người dùng biết tín hiệu được dùng làm gì và có thể từ chối cá nhân hoá.</dd>
+        </dl>
+      </div>
+    </section>
+
+    <!-- ============ 06 RATIONALE ============ -->
+    <section class="page" id="p06">
+      <h1>06 — Design rationale (tổng hợp)</h1>
+      <p class="lead">Mỗi flow đã có thẻ rationale đặt cạnh. Đây là bảng tổng để chấm nhanh + lập luận theo rủi ro/khôi phục.</p>
+
+      <table class="matrix">
+        <thead><tr><th>Kịch bản</th><th>Rủi ro nếu sai</th><th>Hoàn tác?</th><th>Quyết định</th></tr></thead>
+        <tbody>
+          <tr><td>T2 · Làm rõ nhu cầu</td><td>Lịch lệch nhu cầu</td><td>Dễ</td><td><span class="chip ask">Ask</span> 3 câu tối thiểu</td></tr>
+          <tr><td>T3 · Xếp hạng khách sạn</td><td>Đề xuất lệch</td><td>Dễ, thấy ngay</td><td><span class="chip act">Act</span> + cho chỉnh trọng số</td></tr>
+          <tr><td>T6 · Lịch quá dày</td><td>Trải nghiệm mệt</td><td>Dễ (bản nháp)</td><td><span class="chip act">Act</span> tự nêu + recovery</td></tr>
+          <tr><td>T7 · Thông tin lỗi thời</td><td>Tới nơi đóng cửa</td><td>Trung bình</td><td><span class="chip ask">Ask</span> + cảnh báo + thay thế</td></tr>
+          <tr><td>T9 · Giữ phòng</td><td>Đặt nhầm</td><td>Free 24h</td><td><span class="chip ask">Ask</span> xác nhận</td></tr>
+          <tr><td>T9 · Thanh toán</td><td>Mất tiền</td><td>Khó</td><td><span class="chip dont">Don't Act</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout" style="margin-top:16px">
+        <strong>Nguyên tắc lập luận:</strong> không viết "nhóm thấy hợp lý". Mọi quyết định agency suy ra từ <em>chi phí khi sai × khả năng hoàn tác</em>: chi phí cao + khó hoàn tác → Ask/Don't Act; rủi ro thấp + thấy ngay + undo được → Act.
+      </div>
+
+      <div class="rationale" style="margin-top:16px">
+        <h4>Rủi ro còn lại (nêu trong demo)</h4>
+        <p>① Tín hiệu implicit (xoá điểm) có thể bị diễn giải sai → đã giảm thiểu bằng "hỏi lại trước khi cá nhân hoá". ② Badge "cập nhật 3 tháng" phụ thuộc metadata nguồn — nếu nguồn không có mốc thời gian, cần fallback "không rõ độ mới".</p>
+      </div>
+    </section>
+
+    <!-- ============ 07 DEMO PATH ============ -->
+    <section class="page" id="p07">
+      <h1>07 — Demo path (5 phút)</h1>
+      <p class="lead">Đường chạy để giảng viên đi đúng các nhánh trong 5 phút. Bấm để nhảy tới trang.</p>
+
+      <div class="demo-step"><span class="t">0:00–0:30</span><span class="d">Người dùng &amp; lát cắt → <a onclick="goto('p00')">mở 00 Flow map</a></span></div>
+      <div class="demo-step"><span class="t">0:30–1:15</span><span class="d">Onboarding: 3 callout năng lực, bỏ qua quyền → <a onclick="goto('p01')">mở 01</a></span></div>
+      <div class="demo-step"><span class="t">1:15–2:15</span><span class="d">Ask (T2) rồi Agency 3 mức (T9) → <a onclick="goto('p02')">mở 02</a> → <a onclick="goto('p03')">03</a></span></div>
+      <div class="demo-step"><span class="t">2:15–3:45</span><span class="d">Hai kịch bản lỗi: T6 recovery đầy đủ + T7 lỗi thời → <a onclick="goto('p04')">mở 04</a></span></div>
+      <div class="demo-step"><span class="t">3:45–4:45</span><span class="d">Feedback 2×2: chỉ đủ 4 ô + 1 vòng hoàn chỉnh → <a onclick="goto('p05')">mở 05</a></span></div>
+      <div class="demo-step"><span class="t">4:45–5:00</span><span class="d">Quyết định quan trọng nhất + rủi ro còn lại → <a onclick="goto('p06')">mở 06</a></span></div>
+
+      <div class="callout ok" style="margin-top:20px">
+        <strong>Checklist điều kiện tối thiểu:</strong> ✔ Onboarding · ✔ 4+ kịch bản ngoài onboarding · ✔ Onboarding→During→After→Feedback · ✔ Đủ Act/Ask/Don't · ✔ 1 vòng recovery hoàn chỉnh (T6) · ✔ Đủ 4 ô feedback · ✔ Lớp bằng chứng (T3, T7) · ✔ Rationale cạnh mỗi flow.
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="toast" class="hidden" style="position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#000; color:#fff; padding:12px 18px; border-radius:10px; font-size:13px; border:1px solid var(--line); max-width:380px; z-index:50;"></div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
