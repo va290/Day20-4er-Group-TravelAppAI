@@ -182,3 +182,162 @@ function t7(action) {
 window.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('wBeach')) rerank();
 });
+
+/* ===================================================================== */
+/* ===== 08 · DAY 20 — Onboarding → First Core Action (redesign) ======= */
+/* ===================================================================== */
+const d20State = { dest: 'Đà Nẵng', days: '', companion: '', budget: '' };
+let d20Started = false, d20T0 = 0, d20Timer = null, d20LastRemoved = null, d20UndoTimer = null;
+
+const D20_BASE = [
+  { t: '09:00', a: '☀️ Ăn sáng Mì Quảng Bà Vị',      n: 'Gần khách sạn' },
+  { t: '10:00', a: '🏖️ Tắm biển & thư giãn Mỹ Khê',   n: 'Block 2.5h — đúng mục tiêu “xả stress”' },
+  { t: '12:30', a: '🍜 Ăn trưa hải sản Năm Châu',      n: '4.5★ · dữ liệu cập nhật mới' },
+  { t: '14:30', a: '🏔️ Tham quan Ngũ Hành Sơn',       n: '1 điểm văn hoá, gần khu ăn trưa' },
+  { t: '17:00', a: '🌅 Ngắm hoàng hôn + dạo biển',     n: 'Kết thúc ngày nhẹ nhàng' },
+];
+let d20Itin = [];
+
+const D20_PROG = ['🔍 Đang tìm điểm đến phù hợp…', '🏨 Đang chọn khách sạn khu vực trung tâm…', '📋 Đang ghép lịch trình tối ưu…'];
+
+function d20Log(name, meta, core) {
+  const box = document.getElementById('d20log');
+  if (!box) return;
+  const ph = box.querySelector('.muted'); if (ph) box.innerHTML = '';
+  const row = document.createElement('div');
+  if (core) row.className = 'core';
+  row.innerHTML = '<code>' + name + '</code>' + (meta ? ' <span class="meta">· ' + meta + '</span>' : '');
+  box.appendChild(row); box.scrollTop = box.scrollHeight;
+}
+
+function d20Enter() {           // fire when user first opens the Day 20 page
+  if (d20Started) return;
+  d20Started = true;
+  d20Log('onboarding_start', 'user mở flow Day 20');
+}
+document.getElementById('nav').addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (b && b.dataset.page === 'p08') d20Enter();
+});
+
+function d20Show(stage) {
+  ['a', 'b', 'c', 'd', 'e', 'f'].forEach(s =>
+    document.getElementById('d20' + s).classList.toggle('hidden', s !== stage));
+}
+
+function d20Tick() {
+  if (!d20T0) return;
+  document.getElementById('d20ttv').textContent = 'TTV ' + Math.round((Date.now() - d20T0) / 1000) + 's';
+}
+
+function d20Go(stage) {
+  d20Enter();   // đảm bảo onboarding_start đã được ghi
+  if (stage === 'b' && !document.getElementById('d20a').classList.contains('hidden')) {
+    // coming from Welcome → start TTV timer + log CTA
+    d20T0 = Date.now(); clearInterval(d20Timer); d20Timer = setInterval(d20Tick, 1000);
+    d20Log('onboarding_cta_click', 'bấm “Bắt đầu lên kế hoạch”');
+  }
+  if (stage === 'b') { document.getElementById('d20bar').textContent = 'Chọn điểm đến'; d20Show('b'); return; }
+  if (stage === 'c') { document.getElementById('d20bar').textContent = 'Bối cảnh chuyến đi'; d20Show('c'); return; }
+  if (stage === 'd') {
+    d20Log('context_chips_selected', [d20State.days, d20State.companion, d20State.budget].filter(Boolean).join(' · ') || 'mặc định');
+    document.getElementById('d20bar').textContent = 'AI đang tạo…';
+    d20Show('d'); d20Skeleton(); return;
+  }
+}
+
+function d20Dest(v) {
+  v = (v || '').trim(); if (!v) return;
+  d20State.dest = v;
+  d20Log('destination_selected', v);
+  d20Go('c');
+}
+
+function d20ChangeDest() { d20Log('destination_changed', 'user quay lại đổi điểm đến'); d20Go('b'); }
+
+function d20Sel(btn, group, val) {
+  const wrap = btn.closest('.chgroup');
+  wrap.querySelectorAll('.selchip').forEach(c => c.classList.remove('on'));
+  btn.classList.add('on');
+  d20State[group] = val;
+}
+
+function d20Skeleton() {
+  let i = 0; const el = document.getElementById('d20prog'); el.textContent = D20_PROG[0];
+  const iv = setInterval(() => { i++; if (i < D20_PROG.length) el.textContent = D20_PROG[i]; }, 800);
+  setTimeout(() => {
+    clearInterval(iv);
+    d20Itin = D20_BASE.slice();
+    d20RenderItin();
+    d20Log('itinerary_created', d20State.dest + ' · ngày 1 · ' + d20Itin.length + ' điểm');
+    document.getElementById('d20bar').textContent = 'Lịch trình ngày 1';
+    d20Show('e');
+  }, 2500);
+}
+
+function d20RenderItin() {
+  const days = d20State.days && d20State.days !== 'linh hoạt' ? d20State.days : 'lịch gợi ý';
+  document.getElementById('d20sum').textContent = d20State.dest + ' · ' + days;
+  const ul = document.getElementById('d20itin'); ul.innerHTML = '';
+  d20Itin.forEach((it, idx) => {
+    const li = document.createElement('li');
+    li.innerHTML = '<span class="tm">' + it.t + '</span>' +
+      '<span class="ac">' + it.a + '<small>' + it.n + '</small></span>' +
+      '<button class="del" title="Xoá điểm này" onclick="d20Del(' + idx + ')">✕</button>';
+    ul.appendChild(li);
+  });
+}
+
+function d20Del(idx) {
+  d20LastRemoved = { item: d20Itin[idx], index: idx };
+  d20Itin.splice(idx, 1);
+  d20RenderItin();
+  d20Log('itinerary_edited', 'xoá “' + d20LastRemoved.item.a + '”');
+  const bar = document.getElementById('d20undo');
+  bar.classList.remove('hidden');
+  bar.innerHTML = '<span>Đã xoá ' + d20LastRemoved.item.a + '</span><button onclick="d20Undo()">↩ Hoàn tác</button>';
+  clearTimeout(d20UndoTimer);
+  d20UndoTimer = setTimeout(() => bar.classList.add('hidden'), 5000);
+}
+
+function d20Undo() {
+  if (!d20LastRemoved) return;
+  d20Itin.splice(Math.min(d20LastRemoved.index, d20Itin.length), 0, d20LastRemoved.item);
+  d20RenderItin();
+  d20Log('undo_action', 'hoàn tác xoá “' + d20LastRemoved.item.a + '”');
+  document.getElementById('d20undo').classList.add('hidden');
+  d20LastRemoved = null;
+}
+
+function d20Regen() {
+  d20Log('itinerary_regenerated', 'user yêu cầu lịch trình khác');
+  document.getElementById('d20bar').textContent = 'AI đang tạo lại…';
+  d20Show('d'); d20Skeleton();
+}
+
+function d20Confirm() {                       // ★ FIRST CORE ACTION / ACTIVATION
+  clearInterval(d20Timer);
+  const s = d20T0 ? Math.round((Date.now() - d20T0) / 1000) : null;
+  const days = d20State.days && d20State.days !== 'linh hoạt' ? (' ' + d20State.days) : '';
+  document.getElementById('d20done').textContent = d20State.dest + days;
+  document.getElementById('d20bar').textContent = '✓ Đã chốt';
+  d20Log('itinerary_confirmed', '★ CORE ACTION · Activation' + (s != null ? ' · TTV ' + s + 's' : ''), true);
+  d20Show('f');
+}
+
+function d20Cal()   { d20Log('calendar_permission_granted', 'cấp quyền Calendar SAU core action (Delay)'); toast('📅 Đã đồng bộ lịch trình vào Google Calendar.'); }
+function d20Watch() { d20Log('price_watch_added', 'bật theo dõi giá → nurture (M3)'); toast('🔔 Đã bật theo dõi giá vé & khách sạn cho ' + d20State.dest + '. Báo khi giá đổi.'); }
+function d20Share() { d20Log('share_initiated', 'tạo link chia sẻ'); toast('📤 Đã tạo link chia sẻ cho bạn đồng hành.'); }
+
+function d20Reset() {
+  d20State.dest = 'Đà Nẵng'; d20State.days = ''; d20State.companion = ''; d20State.budget = '';
+  d20Itin = []; d20LastRemoved = null; d20T0 = 0; clearInterval(d20Timer);
+  document.getElementById('d20ttv').textContent = 'TTV ~0s';
+  document.getElementById('d20bar').textContent = 'WanderAI';
+  document.getElementById('d20undo').classList.add('hidden');
+  document.querySelectorAll('#d20c .selchip').forEach(c => c.classList.remove('on'));
+  document.getElementById('d20log').innerHTML = '<span class="muted">Chạy flow để thấy event bắn theo từng bước…</span>';
+  d20Started = false;
+  d20Show('a');
+  d20Enter();
+}

@@ -23,6 +23,7 @@
       <button data-page="p05"><span class="code">05</span> Feedback loop 2×2</button>
       <button data-page="p06"><span class="code">06</span> Design rationale</button>
       <button data-page="p07"><span class="code">07</span> Demo path (5')</button>
+      <button data-page="p08" class="day20"><span class="code">08</span> Onboarding → Core Action ✦ Day 20</button>
     </nav>
     <div class="team">
       <div class="team-title">Nhóm thực hiện</div>
@@ -488,6 +489,140 @@
 
       <div class="callout ok" style="margin-top:20px">
         <strong>Checklist điều kiện tối thiểu:</strong> ✔ Onboarding · ✔ 4+ kịch bản ngoài onboarding · ✔ Onboarding→During→After→Feedback · ✔ Đủ Act/Ask/Don't · ✔ 1 vòng recovery hoàn chỉnh (T6) · ✔ Đủ 4 ô feedback · ✔ Lớp bằng chứng (T3, T7) · ✔ Rationale cạnh mỗi flow.
+      </div>
+    </section>
+
+    <!-- ============ 08 DAY 20 — ONBOARDING → FIRST CORE ACTION (REDESIGN) ============ -->
+    <section class="page" id="p08">
+      <h1>08 — Onboarding → First Core Action <span class="tag">Day 20 · Redesign</span></h1>
+      <p class="lead">Hành trình tối ưu từ lúc mở app đến <strong>first core action = “Chốt lịch trình”</strong>. Core action này <em>chưa tồn tại</em> trong prototype Ngày 18 — đây là phần bổ sung của Day 20. Bấm chạy thử toàn bộ flow.</p>
+
+      <div class="callout">🔁 <strong>Before / After:</strong> bản gốc Ngày 18 ở <a onclick="goto('p01')">01 Onboarding</a> → <a onclick="goto('p03')">03 Review</a> (kết thúc ở review, không có bước “chốt”). Bản tối ưu Day 20 là flow tương tác bên dưới. Đối chiếu chi tiết: <code>03-Onboarding-First-Core-Action.md</code>.</div>
+
+      <div class="row" style="align-items:flex-start; gap:24px;">
+        <div class="screen" id="d20screen" style="max-width:480px">
+          <div class="statusbar"><span id="d20bar">WanderAI</span><span id="d20ttv" class="muted">TTV ~0s</span></div>
+
+          <!-- Stage A · Welcome (MH01-NEW): Simplify onboarding + Delay permission -->
+          <div id="d20a">
+            <div class="d20-hero">
+              <div class="d20-logo">🧭</div>
+              <h3 style="margin:6px 0 2px">WanderAI</h3>
+              <p class="muted" style="font-size:13px; margin:0 0 10px">Lịch trình du lịch cá nhân hoá trong ~2 phút.</p>
+              <div class="trust-badge">🔒 AI không bao giờ tự thanh toán — bạn luôn duyệt bước cuối.</div>
+              <button class="btn cta" onclick="d20Go('b')">🗺️ Bắt đầu lên kế hoạch</button>
+              <p class="note muted" style="font-size:11px; margin-top:10px">Quyền Lịch / Vị trí sẽ hỏi <em>sau</em> khi bạn đã thấy giá trị — không hỏi ngay (Delay).</p>
+            </div>
+          </div>
+
+          <!-- Stage B · Destination cards (MH02-NEW): bỏ chat trống -->
+          <div id="d20b" class="hidden">
+            <h3 style="margin:2px 0 4px">Bạn muốn đi đâu?</h3>
+            <p class="muted" style="font-size:12px; margin:0 0 8px">Chạm 1 thẻ — hoặc gõ điểm đến của bạn.</p>
+            <div class="dgrid">
+              <button class="dcard" onclick="d20Dest('Đà Nẵng')"><span class="emo">🏖️</span><b>Đà Nẵng</b><small>Biển đẹp, ẩm thực</small></button>
+              <button class="dcard" onclick="d20Dest('Hội An')"><span class="emo">🏮</span><b>Hội An</b><small>Phố cổ, đèn lồng</small></button>
+              <button class="dcard" onclick="d20Dest('Đà Lạt')"><span class="emo">🌄</span><b>Đà Lạt</b><small>Mát mẻ, cafe view</small></button>
+              <button class="dcard" onclick="d20Dest('Sa Pa')"><span class="emo">🏔️</span><b>Sa Pa</b><small>Ruộng bậc thang</small></button>
+              <button class="dcard" onclick="d20Dest('Phú Quốc')"><span class="emo">🌊</span><b>Phú Quốc</b><small>Đảo, resort</small></button>
+              <button class="dcard" onclick="d20Dest('Nha Trang')"><span class="emo">🏙️</span><b>Nha Trang</b><small>Biển, vui chơi</small></button>
+            </div>
+            <input class="d20input" placeholder="Hoặc gõ điểm đến khác… (Enter)" onkeydown="if(event.key==='Enter')d20Dest(this.value)">
+          </div>
+
+          <!-- Stage C · Context chips (MH02b-NEW): giữ chip, thêm “Chưa chắc/Linh hoạt” -->
+          <div id="d20c" class="hidden">
+            <h3 style="margin:2px 0 2px">Thêm vài thông tin để lịch sát ý hơn</h3>
+            <p class="muted" style="font-size:12px; margin:0 0 6px">Chưa chắc cũng được — AI vẫn tạo bản hợp lý.</p>
+            <div class="chgroup">① Đi mấy ngày?
+              <div class="row">
+                <button class="selchip" onclick="d20Sel(this,'days','3N2Đ')">3N2Đ</button>
+                <button class="selchip" onclick="d20Sel(this,'days','4N3Đ')">4N3Đ</button>
+                <button class="selchip" onclick="d20Sel(this,'days','5N4Đ')">5N4Đ</button>
+                <button class="selchip" onclick="d20Sel(this,'days','linh hoạt')">Chưa chắc</button>
+              </div>
+            </div>
+            <div class="chgroup">② Đi với ai?
+              <div class="row">
+                <button class="selchip" onclick="d20Sel(this,'companion','Gia đình')">Gia đình</button>
+                <button class="selchip" onclick="d20Sel(this,'companion','Cặp đôi')">Cặp đôi</button>
+                <button class="selchip" onclick="d20Sel(this,'companion','Bạn bè')">Bạn bè</button>
+                <button class="selchip" onclick="d20Sel(this,'companion','Một mình')">Một mình</button>
+              </div>
+            </div>
+            <div class="chgroup">③ Ngân sách?
+              <div class="row">
+                <button class="selchip" onclick="d20Sel(this,'budget','Tiết kiệm')">Tiết kiệm</button>
+                <button class="selchip" onclick="d20Sel(this,'budget','Thoải mái')">Thoải mái</button>
+                <button class="selchip" onclick="d20Sel(this,'budget','linh hoạt')">Linh hoạt</button>
+              </div>
+            </div>
+            <button class="btn cta" onclick="d20Go('d')">Tạo lịch trình →</button>
+          </div>
+
+          <!-- Stage D · Skeleton loading (MH02c-NEW) -->
+          <div id="d20d" class="hidden">
+            <div class="state-pill"><span class="dot-pulse"></span> <span id="d20prog">Đang tìm điểm đến phù hợp…</span></div>
+            <div class="skelwrap">
+              <div class="skel sk-title"></div>
+              <div class="skel"></div><div class="skel sk-short"></div>
+              <div class="skel"></div><div class="skel"></div><div class="skel sk-short"></div>
+            </div>
+            <p class="note muted" style="font-size:11px">Lịch trình sẽ sẵn sàng trong ~10 giây — bạn thấy AI đang làm gì, không phải màn hình trống.</p>
+          </div>
+
+          <!-- Stage E · Itinerary (MH03-NEW): 5 điểm giãn cách + Chốt + recovery -->
+          <div id="d20e" class="hidden">
+            <div class="callout ok" style="margin:0 0 8px">✓ <b id="d20sum">Đà Nẵng · 4N3Đ</b> — Ngày 1 (thong thả, 5 điểm)</div>
+            <ul class="itin" id="d20itin"></ul>
+            <div id="d20undo" class="undobar hidden"></div>
+            <div class="row" style="margin:6px 0">
+              <button class="btn sm ghost" onclick="d20Regen()">🔄 Tạo lại lịch khác</button>
+              <button class="btn sm ghost" onclick="d20ChangeDest()">↩ Đổi điểm đến</button>
+            </div>
+            <button class="btn cta" onclick="d20Confirm()">✓ Chốt lịch trình này</button>
+            <p class="note muted" style="font-size:11px; text-align:center; margin-top:6px">Đây là <strong>first core action</strong> — lúc value được “seal”.</p>
+          </div>
+
+          <!-- Stage F · Celebration + post-action (MH03b-NEW): permission ở đây -->
+          <div id="d20f" class="hidden">
+            <div class="celebrate">
+              <div class="confetti">🎉</div>
+              <h3 style="margin:6px 0 2px">Tuyệt vời!</h3>
+              <p class="muted" style="font-size:13px; margin:0">Lịch trình <b id="d20done">Đà Nẵng 4N3Đ</b> đã được chốt. Chỉnh sửa bất cứ lúc nào.</p>
+            </div>
+            <div class="evidence" style="margin-top:10px">
+              <strong>Tiếp theo (tuỳ chọn):</strong>
+              <div class="row" style="margin-top:8px">
+                <button class="btn sm" onclick="d20Cal()">📅 Đồng bộ Calendar</button>
+                <button class="btn sm" onclick="d20Watch()">🔔 Theo dõi giá</button>
+                <button class="btn sm" onclick="d20Share()">📤 Chia sẻ</button>
+              </div>
+              <p class="note muted" style="font-size:11px; margin-top:8px">Quyền Calendar hỏi <em>ở đây</em> — sau khi đã nhận giá trị (Delay từ onboarding), nên tỷ lệ đồng ý cao hơn.</p>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <button class="btn ghost sm" onclick="d20Show('e')">✏️ Chỉnh sửa lịch trình</button>
+              <button class="btn ghost sm" onclick="d20Reset()">↺ Chạy lại flow</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="flex:1; min-width:280px">
+          <div class="rationale">
+            <h4>Friction Audit đã áp dụng</h4>
+            <dl>
+              <dt>Keep</dt><dd>Trust boundary, chip bối cảnh, swipe xoá điểm.</dd>
+              <dt>Simplify</dt><dd>Onboarding 2 dòng + 1 CTA; chat trống → destination cards; lịch 6 → 5 điểm giãn cách.</dd>
+              <dt>Delay</dt><dd>Quyền Calendar → dời xuống sau khi chốt.</dd>
+              <dt>Add</dt><dd>Nút “Chốt lịch trình” = <strong>core action</strong> (Ngày 18 thiếu) + celebration.</dd>
+            </dl>
+          </div>
+          <div class="evidence" style="margin-top:12px">
+            <strong>📡 Event log (bàn giao Bài 6)</strong>
+            <div id="d20log" class="evlog"><span class="muted">Chạy flow để thấy event bắn theo từng bước…</span></div>
+          </div>
+          <div class="callout" style="margin-top:12px">⏱ <strong>TTV mục tiêu ~90–120s</strong> tới first core action (Ngày 18: không có core action). Con số là <em>ước tính từ prototype</em> — cần xác nhận bằng tracking thật (Bài 6).</div>
+        </div>
       </div>
     </section>
 
