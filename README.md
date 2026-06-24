@@ -1,0 +1,26 @@
+# Day 20 Lab — Retention, Engagement & Habit Loop
+
+**Sản phẩm:** AI Travel Planner (tiếp nối prototype Ngày 18)
+**Lát cắt:** AI lập & chỉnh lịch trình một chuyến đi → người dùng review → đặt dịch vụ.
+
+> Bài lab Ngày 20 không làm sản phẩm mới. Nhóm giữ nguyên sản phẩm/scenario/persona Ngày 18 và bổ sung lớp **Retention / Engagement / Habit Loop** lên trên. Nộp **1 link duy nhất**.
+
+## Nhóm thực hiện
+| Họ tên | Mã HV | Phụ trách |
+|---|---|---|
+| Đỗ Việt Anh | 2A202601008 | Bài 1 + tích hợp, repo, demo |
+| Nguyễn Viết Du | 2A202600800 | Bài 2 — Core Action / Active User / Retention Metric |
+| Nguyễn Kim Hoàng | 2A202600987 | Bài 3 — Onboarding → First Core Action (+ sửa prototype) |
+| Nguyễn Lê Văn | 2A202600569 | Bài 4 + 5 + 6 — Measurement / Hook / Tracking |
+
+## Tiến độ
+- [x] **Bài 1 — Customer Retention Canvas** → [`01-Customer-Retention-Canvas.md`](01-Customer-Retention-Canvas.md) ✅ *(đã kiểm chứng dữ liệu thật, frequency chốt 2–4 lần/năm)*
+- [ ] Bài 2 — Core Action, Active User & Retention Metric
+- [ ] Bài 3 — Onboarding Audit + Redesign + Before/After
+- [ ] Bài 4 — Measurement Ladder & North Star Metric
+- [ ] Bài 5 — Nature vs Nurture & Hook Model
+- [ ] Bài 6 — Metric Tracking Requirement
+- [ ] Chỉnh sửa prototype Ngày 18 + Demo path (≤ 8 phút)
+
+## Quyết định nền tảng (cả nhóm bám theo)
+**AI Travel Planner là sản phẩm tần suất THẤP** (core use case ~2–4 lần/năm). KHÔNG ép daily retention / habit hằng ngày. Đo theo planning window + lần lập chuyến tiếp theo, dùng Nurture để giữ hiện diện giữa hai chuyến. Chi tiết & nguồn: xem file Bài 1.
