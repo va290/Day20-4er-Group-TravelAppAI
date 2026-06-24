@@ -15,8 +15,8 @@
 
 ## Tiến độ
 - [x] **Bài 1 — Customer Retention Canvas** → [`01-Customer-Retention-Canvas.md`](01-Customer-Retention-Canvas.md) ✅ *(đã kiểm chứng dữ liệu thật, frequency chốt 2–4 lần/năm)*
-- [ ] Bài 2 — Core Action, Active User & Retention Metric
-- [ ] Bài 3 — Onboarding Audit + Redesign + Before/After
+- [x] **Bài 2 — Core Action, Active User & Retention Metric** → [`02-Retention-Metric.md`](02-Retention-Metric.md) ✅ *(core action = chốt itinerary; metric per-trip + within-window + nurture)*
+- [x] **Bài 3 — Onboarding Audit + Redesign + Before/After** → [`03-Onboarding-First-Core-Action.md`](03-Onboarding-First-Core-Action.md) ✅ *(audit Day18, friction audit, redesign flow, TTV ~90–120s)*
 - [ ] Bài 4 — Measurement Ladder & North Star Metric
 - [ ] Bài 5 — Nature vs Nurture & Hook Model
 - [ ] Bài 6 — Metric Tracking Requirement
